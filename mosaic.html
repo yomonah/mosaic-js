@@ -15,8 +15,8 @@
         window.onload= function(){
           var canvas = document.getElementById("vanvas1");  
           var context = canvas.getContext("2d");  
-          var cw = canvas.width;  
-          var ch = canvas.height; 
+          var quan = 3; //马赛克的大小
+          var num = 9; //一次操作包含马赛克的个数
 
           //创建image对象
           var imgObj = new Image();
@@ -43,7 +43,7 @@
                     var ev = ev || window.event;
                     var mx = ev.clientX-canvas.offsetLeft;
                     var my = ev.clientY-canvas.offsetTop;
-                    if(Math.pow(dx-mx,2)+Math.pow(dy-my,2)>= Math.pow(9*3,2)){  //(quan*马赛克个数*2)的平方
+                    if(Math.pow(dx-mx,2)+Math.pow(dy-my,2)>= Math.pow(quan*num,2)){  //(quan*马赛克个数*2)的平方
                       drawLine(obj,mx,my);
                       dx = mx;
                       dy = my;
@@ -63,16 +63,14 @@
             }
           }
           function drawLine(obj,dx,dy){
+            //原始图像
             var originalImgData = context.getImageData(0,0,canvas.width,canvas.height);  
             var originalPxData = originalImgData.data;  
               
-            //循环修改  
+            //用于循环修改  
             var modifyImgData = context.getImageData(0,0,canvas.width,canvas.height);  
             var modifyPxData = modifyImgData.data;  
-            var quan = 3; //马赛克的大小
-            var num = 9; //一次操作包含马赛克的个数
-            
-              
+
             for(var i=dx-quan*num;i<dx+quan*num;i = i+2*quan+1){  
               for(var j=dy-quan*num;j<dy+quan*num;j = j+2*quan+1){
                 //中心点(dx,dy)
@@ -95,7 +93,7 @@
                     for(var y = -quan;y<=quan;y++){  
                       var xx = i+x;  
                       var yy = j+y;  
-                      var pp = yy*cw+xx; //周围的元素。  
+                      var pp = yy*canvas.width+xx; //周围的元素。  
                       sumR += originalPxData[pp*4+0];  
                       sumG += originalPxData[pp*4+1];  
                       sumB += originalPxData[pp*4+2];  
@@ -111,7 +109,7 @@
                   for(var y = -quan;y<=quan;y++){  
                     var xx = i+x;  
                     var yy = j+y;  
-                    var pp = yy*cw+xx; //周围的元素。  
+                    var pp = yy*canvas.width+xx; //周围的元素。  
                     modifyPxData[pp*4+0] = avgR;  
                     modifyPxData[pp*4+1] = avgG;  
                     modifyPxData[pp*4+2] = avgB;  
